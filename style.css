@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ツールバースタイル */
+.toolbar {
+    width: 55px;
+    height: 100%;
+    background-color: #232323;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.tool-button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #2d2d2d;
+    color: #c0c0c0;
+}
+
+.tool-button:hover {
+    background-color: #3a3a3a;
+    color: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.tool-button.active {
+    background-color: #444;
+    color: #ffffff;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.divider {
+    width: 80%;
+    height: 1px;
+    background-color: #3a3a3a;
+    margin: 8px 0;
+}
+
+/* カラーパレットスタイル */
+.color-palette {
+    position: absolute;
+    left: 65px;
+    background-color: #2d2d2d;
+    border-radius: 5px;
+    padding: 5px;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.color-option {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #3a3a3a;
+    transition: transform 0.2s ease;
+}
+
+.color-option:hover {
+    transform: scale(1.2);
+    border-color: #f0f0f0;
+}
+
+/* スライダースタイル */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0;
+    height: 140px; /* アイコン＋スライダー＋数値分の高さ */
+    gap: 10px; /* 要素間に余白 */
+}
+
+/* noUISliderの基本スタイル */
+.noUi-target {
+    width: 5px; /* スライダーの太さ */
+    height: 100px; /* スライダーの長さ */
+    background: #3a3a3a; /* トラックの背景色 */
+    border: none;
+    box-shadow: none;
+}
+
+.noUi-connect {
+    background: #c0c0c0; /* 選択範囲の色 */
+}
+
+.slider-container .noUi-handle {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    /* 位置調整をシンプルに */
+    right: -2.5px; /* トラックの右側に少しはみ出すように */
+    transform: translateY(-50%); /* 上下中央に配置 */
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5); /* 軽い影で立体感 */
+    border: none;
+}
+
+.slider-container .noUi-handle:hover {
+    background: #c0c0c0; /* ホバー時は薄いグレーで統一感 */
+}
+
+.slider-container .noUi-handle::before,
+.noUi-handle::before, .noUi-handle::after {
+    display: none; /* デフォルトの装飾を削除 */
+}
+
+.slider-value {
+    font-size: 10px;
+    color: #c0c0c0;
+}
+
+.slider-value {
+    font-size: 10px;
+    margin-top: 5px;
+    color: #c0c0c0;
+}
+
+/* 作業エリアスタイル */
+.work-area {
+    flex: 1;
+    position: relative;
+    background-color: #2a2a2a;
+    overflow: hidden;
+    cursor: default; 
+}
+
+#layer-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  /*  transform: translate(-50%, -50%); */
+}
+
+#background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; 
+}
+
+#canvas-layer {
+    image-rendering: pixelated; /* アンチエイリアスオフ */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2; 
+    opacity: 0.7; /* 不透明度70% */
+}
+
+#preview-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99; /* canvas-layerより上、brush-previewより下 */
+    pointer-events: none;
+}
+
+/* ブラシプレビュースタイル */
+#brush-preview {
+    position: absolute;
+    pointer-events: none;
+    z-index: 100;
+    transform-origin: center;
+    display: none;
+    border-radius: 50%; /* 円形にするための設定 */
+    opacity: 0.7; /*  不透明度70% */
+}
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 半透明の黒で暗く */
+    z-index: 1000; /* 最前面 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loading-spinner {
+    width: 100px;
+    height: 100px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,32 @@
+# Updated requirements for LaMa (Python 3.10 compatible)
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.4.0+cu121
+torchvision==0.19.0+cu121  # 2.4.0対応の最新版
+torchmetrics>=0.8.0,<0.9.0
+
+# Python 3.10 対応版に更新（バージョンレンジ指定）
+scikit-learn>=1.1.2,<1.2.0
+scikit-image>=0.19.3,<0.20.0
+albumentations==0.4.6  # LaMaに合わせる
+hydra-core>=1.1.1,<1.2.0
+pytorch-lightning>=1.7.1,<1.8.0
+kornia>=0.7.0,<0.8.0
+easydict>=1.9
+pandas
+
+# 以下はそのまま
+numpy==1.23.5
+Pillow>=8.0.0
+flask>=1.1.2
+werkzeug>=1.0.1
+pyyaml>=5.4.1
+tqdm>=4.66.1
+opencv-python>=4.6.0
+joblib>=1.2.0
+matplotlib>=3.6.0
+tabulate>=0.9.0
+packaging>=23.0
+webdataset>=0.2.48
+tensorflow>=2.10.0
+
+# wldhx.yadisk-direct は、必要な場合のみ（通常の推論では不要）

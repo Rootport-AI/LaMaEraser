@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaMaEraser</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nouislider.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon64.png') }}" sizes="64x64"> 
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon32.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon16.png') }}" sizes="16x16">
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <div class="tool-button" id="undo-button" title="元に戻す(Ctrl+Z)"><i class="fas fa-undo"></i></div>
+            <div class="tool-button" id="redo-button" title="やり直し(Ctrl+Y)"><i class="fas fa-redo"></i></div>
+            <div class="divider"></div>
+            <div class="tool-button" id="pan-button" title="移動(H)"><i class="fas fa-hand-paper"></i></div>
+            <div class="tool-button active" id="brush-button" title="ブラシ(B,P)"><i class="fas fa-paint-brush"></i></div>
+            <div class="tool-button" id="bucket-button" title="バケツ塗り(G)"><i class="fas fa-fill-drip"></i></div>
+            <div class="tool-button" id="eraser-button" title="消しゴム(E)"><i class="fas fa-eraser"></i></div>
+            <div class="divider"></div>
+            <div class="tool-button" id="color-button" title="色を選択"><i class="fas fa-palette" style="color: #00FF00;"></i></div>
+            <div class="color-palette" id="color-palette">
+                <div class="color-option" data-color="#00FF00" style="background-color: #00FF00;"></div>
+                <div class="color-option" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                <div class="color-option" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                <div class="color-option" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                <div class="color-option" data-color="#FFFFFF" style="background-color: #FFFFFF;"></div>
+                <div class="color-option" data-color="#000000" style="background-color: #000000;"></div>
+            </div>
+            <div class="slider-container" title="ブラシサイズ(]/[)">
+                <i class="fas fa-circle"></i>
+                <div id="brush-size-slider"></div>
+                <span class="slider-value" id="brush-size-value">40px</span>
+            </div>
+            <div class="slider-container" title="拡大・縮小(+/-, =/-)">
+                <i class="fas fa-search"></i>
+                <div id="zoom-slider"></div>
+                <span class="slider-value" id="zoom-value">100%</span>
+            </div>
+            <div class="divider"></div>
+            <div class="tool-button" id="reset-button" title="表示リセット(0)"><i class="fas fa-compress"></i></div>
+            <div class="tool-button" id="load-button" title="ファイルを開く(F)"><i class="fas fa-folder-open"></i></div>
+            <div class="tool-button" id="run-button" title="実行(Enter)"><i class="fas fa-wand-magic-sparkles"></i></div>
+            <div class="divider"></div>
+            <div class="tool-button" id="dl-button" title="ダウンロード(S)"><i class="fas fa-download"></i></div>
+        </div>
+        <div class="work-area">
+            <div id="layer-container">
+                <canvas id="background-layer"></canvas> 
+                <canvas id="canvas-layer"></canvas>
+                <canvas id="preview-layer"></canvas>
+                <div id="brush-preview"></div> 
+            </div>
+            <div id="loading-overlay" style="display: none;">
+                <div id="loading-spinner" class="spinner">
+                    <div class="spinner-inner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/nouislider.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
