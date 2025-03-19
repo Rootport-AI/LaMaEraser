@@ -1,7 +1,7 @@
 # LaMaEraser
 
 ## Overview
-![LaMaEraser Demo](https://raw.githubusercontent.com/Rootport-AI/LaMaEraser/main/demo.gif)
+![LaMaEraser Demo](https://raw.githubusercontent.com/Rootport-AI/LaMaEraser/main/demo.gif)  
 LaMaEraser is a web-based image editing tool that integrates with the [LaMa inpainting model](https://github.com/advimman/lama) to remove unwanted objects from images. Users can draw masks on the image using a brush, eraser, or bucket tool, and then process the image with AI to seamlessly erase the masked areas. This tool is built with Flask, JavaScript, and leverages Rootport-AI's GPU-enhanced fork of the LaMa model.
 
 ## Features
