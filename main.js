@@ -29,12 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let isMouseDown = false;
     let isPanning = false;
     let lastX, lastY;
-    let history = [];
-    let redoStack = [];
-    let historyLimit = 30;
-    let bgHistory = [];
-    let bgRedoStack = [];
-    let bgHistoryLimit = 30; 
+    let history = []; // [{mask: "dataURL", bg: "dataURL", width: number, height: number}]  
+    let redoStack = [];  
+    let historyLimit = 30;  
     let isShiftDown = false; 
     let isDrawingLine = false; 
     
@@ -108,27 +105,24 @@ document.addEventListener('DOMContentLoaded', function() {
     bgImage.src = '/static/images/defimg.png';
     bgImage.onload = function() {
         bgCtx.drawImage(bgImage, 0, 0, canvasWidth, canvasHeight);
-        saveBgState();
+        saveState();
     };
     
-    // saveStateの実装
-    function saveState() {
-        history.push(canvas.toDataURL());
-        if (history.length > historyLimit) {
-            history.shift();
-        }
-        redoStack = [];
-        updateUndoRedoButtons();
+    function saveState() {  
+        requestAnimationFrame(() => {  
+            history.push({  
+                mask: canvas.toDataURL(),  
+                bg: backgroundLayer.toDataURL(),  
+                width: canvasWidth,  
+                height: canvasHeight  
+            });  
+            if (history.length > historyLimit) history.shift();  
+            redoStack = [];  
+            console.log('Saved state:', history.length);  
+            updateUndoRedoButtons();  
+        });  
     }
-    // 背景画像の状態を保存（バックエンド連携時に呼び出し予定）
-    function saveBgState() {
-        bgHistory.push(backgroundLayer.toDataURL());
-        if (bgHistory.length > bgHistoryLimit) {
-            bgHistory.shift();
-        }
-        bgRedoStack = [];      
-    }
-    
+
     // ファイル選択UI
     const loadButton = document.getElementById('load-button');
     const fileInput = document.createElement('input');
@@ -175,18 +169,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // スケール再計算 
                 transform.initialScale = calculateInitialScale(canvasWidth, canvasHeight);
                 transform.scale = transform.initialScale;
+                transform.apply(); // scale適用
 
                 // 背景描画（サイズ更新後）
                 bgCtx.clearRect(0, 0, canvasWidth, canvasHeight); // 前の画像をクリア
                 bgCtx.drawImage(newImage, 0, 0, canvasWidth, canvasHeight);
                 
                 // マスクもクリアしてリセット
-                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                history = []; // 履歴リセット
-                redoStack = [];
-                saveBgState();
+                saveState();
                 updateUndoRedoButtons();
-                transform.apply(); // scale適用
             };
         };
         reader.readAsDataURL(file);
@@ -211,102 +202,88 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('redo-button').classList.toggle('disabled', redoStack.length === 0 && bgRedoStack.length === 0);
     }
 
+    // Undo
     function undo() {
         if (history.length === 0) return;
-        redoStack.push(canvas.toDataURL());
-        const lastState = history.pop();
-        const img = new Image();
-        img.onload = function() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-            updateUndoRedoButtons();
-        };
-        img.src = lastState;
-
-        if (bgHistory.length > 0) { 
-            bgRedoStack.push(backgroundLayer.toDataURL());
-            const lastBgState = bgHistory.pop();
-            const bgImg = new Image();
-            bgImg.onload = function() {
-                // サイズ確認と調整
-                if (bgImg.width !== canvasWidth || bgImg.height !== canvasHeight) {
-                    canvasWidth = bgImg.width;
-                    canvasHeight = bgImg.height;
-                    canvas.width = canvasWidth;
-                    canvas.height = canvasHeight;
-                    backgroundLayer.width = canvasWidth;
-                    backgroundLayer.height = canvasHeight;
-                    previewLayer.width = canvasWidth;
-                    previewLayer.height = canvasHeight;
-                    layerContainer.style.width = `${canvasWidth}px`;
-                    layerContainer.style.height = `${canvasHeight}px`;
-                    backgroundLayer.style.width = `${canvasWidth}px`;
-                    backgroundLayer.style.height = `${canvasHeight}px`;
-                    canvas.style.width = `${canvasWidth}px`;
-                    canvas.style.height = `${canvasHeight}px`;
-                    previewLayer.style.width = `${canvasWidth}px`;
-                    previewLayer.style.height = `${canvasHeight}px`;
-                    transform.initialScale = calculateInitialScale(canvasWidth, canvasHeight);
-                    transform.scale = transform.initialScale;
-                    transform.apply();
-                }
-                bgCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-                bgCtx.drawImage(bgImg, 0, 0, canvasWidth, canvasHeight);
-                updateUndoRedoButtons();
-            };
-            bgImg.src = lastBgState;
-        }
+        redoStack.push({ 
+            mask: canvas.toDataURL(), 
+            bg: backgroundLayer.toDataURL(), 
+            width: canvasWidth, 
+            height: canvasHeight 
+        }); 
+        const state = history.pop(); 
+        const maskImg = new Image(); 
+        maskImg.onload = function() { 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            ctx.drawImage(maskImg, 0, 0); 
+            updateUndoRedoButtons(); 
+        }; 
+        maskImg.src = state.mask;  
+    
+        const bgImg = new Image();  
+        bgImg.onload = function() {  
+            if (bgImg.width !== canvasWidth || bgImg.height !== canvasHeight) {  
+                canvasWidth = bgImg.width;  
+                canvasHeight = bgImg.height;  
+                [canvas, backgroundLayer, previewLayer].forEach(c => {  
+                    c.width = canvasWidth;  
+                    c.height = canvasHeight;  
+                    c.style.width = `${canvasWidth}px`;  
+                    c.style.height = `${canvasHeight}px`;  
+                });  
+                layerContainer.style.width = `${canvasWidth}px`;  
+                layerContainer.style.height = `${canvasHeight}px`;  
+                transform.initialScale = calculateInitialScale(canvasWidth, canvasHeight);  
+                transform.scale = transform.initialScale;  
+                transform.apply();  
+            }  
+            bgCtx.clearRect(0, 0, canvasWidth, canvasHeight);  
+            bgCtx.drawImage(bgImg, 0, 0);  
+            updateUndoRedoButtons();  
+        };  
+        bgImg.src = state.bg;  
     }
     
-    // Redoの実装（背景とマスクの両方を扱う）
+    // Redo
     function redo() {
-        // マスクのRedo
-        if (redoStack.length > 0) {
-            history.push(canvas.toDataURL());
-            const nextState = redoStack.pop();
-            const img = new Image();
-            img.onload = function() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
-                updateUndoRedoButtons();
-            };
-            img.src = nextState;
-        }
-
-        // 背景画像のRedo
-        if (bgRedoStack.length > 0) {
-            bgHistory.push(backgroundLayer.toDataURL());
-            const nextBgState = bgRedoStack.pop();
-            const bgImg = new Image();
-            bgImg.onload = function() {
-                // サイズ確認と調整
-                if (bgImg.width !== canvasWidth || bgImg.height !== canvasHeight) {
-                    canvasWidth = bgImg.width;
-                    canvasHeight = bgImg.height;
-                    canvas.width = canvasWidth;
-                    canvas.height = canvasHeight;
-                    backgroundLayer.width = canvasWidth;
-                    backgroundLayer.height = canvasHeight;
-                    previewLayer.width = canvasWidth;
-                    previewLayer.height = canvasHeight;
-                    layerContainer.style.width = `${canvasWidth}px`;
-                    layerContainer.style.height = `${canvasHeight}px`;
-                    backgroundLayer.style.width = `${canvasWidth}px`;
-                    backgroundLayer.style.height = `${canvasHeight}px`;
-                    canvas.style.width = `${canvasWidth}px`;
-                    canvas.style.height = `${canvasHeight}px`;
-                    previewLayer.style.width = `${canvasWidth}px`;
-                    previewLayer.style.height = `${canvasHeight}px`;
-                    transform.initialScale = calculateInitialScale(canvasWidth, canvasHeight);
-                    transform.scale = transform.initialScale;
-                    transform.apply();
-                }
-                bgCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-                bgCtx.drawImage(bgImg, 0, 0, canvasWidth, canvasHeight);
-                updateUndoRedoButtons();
-            };
-            bgImg.src = nextBgState;
-        }
+        if (redoStack.length === 0) return;  
+        history.push({  
+            mask: canvas.toDataURL(),  
+            bg: backgroundLayer.toDataURL(),  
+            width: canvasWidth,  
+            height: canvasHeight  
+        });  
+        const state = redoStack.pop();  
+        const maskImg = new Image();  
+        maskImg.onload = function() {  
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  
+            ctx.drawImage(maskImg, 0, 0);  
+            updateUndoRedoButtons();  
+        };  
+        maskImg.src = state.mask;  
+    
+        const bgImg = new Image();  
+        bgImg.onload = function() {  
+            if (bgImg.width !== canvasWidth || bgImg.height !== canvasHeight) {  
+                canvasWidth = bgImg.width;  
+                canvasHeight = bgImg.height;  
+                [canvas, backgroundLayer, previewLayer].forEach(c => {  
+                    c.width = canvasWidth;  
+                    c.height = canvasHeight;  
+                    c.style.width = `${canvasWidth}px`;  
+                    c.style.height = `${canvasHeight}px`;  
+                });  
+                layerContainer.style.width = `${canvasWidth}px`;  
+                layerContainer.style.height = `${canvasHeight}px`;  
+                transform.initialScale = calculateInitialScale(canvasWidth, canvasHeight);  
+                transform.scale = transform.initialScale;  
+                transform.apply();  
+            }  
+            bgCtx.clearRect(0, 0, canvasWidth, canvasHeight);  
+            bgCtx.drawImage(bgImg, 0, 0);  
+            updateUndoRedoButtons();  
+        };  
+        bgImg.src = state.bg;  
     }
 
     window.addEventListener('resize', function() {
@@ -323,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const previewSize = brushSize;
         const canvasPos = transform.screenToWorld(x, y); // キャンバス座標を取得
         
-        // worldToScreenを介さず、キャンバス座標を直接使用 #Add
+        // worldToScreenを介さず、キャンバス座標を直接使用  
         brushPreview.style.left = `${canvasPos.x - previewSize / 2}px`;
         brushPreview.style.top = `${canvasPos.y - previewSize / 2}px`;
         brushPreview.style.width = `${previewSize}px`;
@@ -886,7 +863,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     bgCtx.clearRect(0, 0, canvasWidth, canvasHeight); 
                     bgCtx.drawImage(resultImage, 0, 0, canvasWidth, canvasHeight); 
-                    saveBgState(); 
+                    savegState(); 
                     updateUndoRedoButtons(); 
                 };
             } else {
