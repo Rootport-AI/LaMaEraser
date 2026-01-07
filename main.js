@@ -863,7 +863,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     bgCtx.clearRect(0, 0, canvasWidth, canvasHeight); 
                     bgCtx.drawImage(resultImage, 0, 0, canvasWidth, canvasHeight); 
-                    savegState(); 
+                    saveState(); 
                     updateUndoRedoButtons(); 
                 };
             } else {
