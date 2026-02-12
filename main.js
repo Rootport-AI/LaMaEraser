@@ -702,19 +702,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     });
 
-    // マウスホイールでズーム（マウス位置中心）
+    // マウスホイールでズーム（カーソル位置を支点）
     layerContainer.addEventListener('wheel', function(e) {
         e.preventDefault();
         const zoomStep = 0.1;
         const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
+        const worldBefore = transform.screenToWorld(e.clientX, e.clientY);
     
         // 新しいスケールを計算
         const newScale = Math.max(0.25, Math.min(6, transform.scale + delta));
         if (newScale === transform.scale) return;
     
-        // スケール更新（offsetX/Y は変更しない）
+        // スケール更新後にカーソル下のワールド座標が一致するようオフセット補正
         transform.scale = newScale;
         transform.apply();
+
+        const worldAfter = transform.screenToWorld(e.clientX, e.clientY);
+        transform.offsetX += worldAfter.x - worldBefore.x;
+        transform.offsetY += worldAfter.y - worldBefore.y;
+        transform.apply();
+
         updateZoomSlider();
     });
 
