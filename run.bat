@@ -1,40 +1,40 @@
 @echo off
 
-REM --- ãƒ™ãƒ¼ã‚¹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¨ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¨­å®š ---
+REM --- ƒx[ƒXƒfƒBƒŒƒNƒgƒŠ‚ÆƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒfƒBƒŒƒNƒgƒŠ‚ðÝ’è ---
 set BASE_DIR=%~dp0
 set APP_DIR=%BASE_DIR%appfiles\lama
 
-REM --- ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒå­˜åœ¨ã™ã‚‹ã‹ç¢ºèª ---
+REM --- ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒfƒBƒŒƒNƒgƒŠ‚ª‘¶Ý‚·‚é‚©Šm”F ---
 if not exist "%APP_DIR%" (
 echo note: run.bat --listen to allow LAN access (debug forced OFF)
 python app.py %*
-    echo ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã‚’å…ˆã«å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+    echo ƒZƒbƒgƒAƒbƒv‚ðæ‚ÉŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
     pause
     exit /b 1
 )
 
-REM --- ä½œæ¥­ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ç§»å‹• ---
+REM --- ì‹ÆƒfƒBƒŒƒNƒgƒŠ‚ðƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒfƒBƒŒƒNƒgƒŠ‚ÉˆÚ“® ---
 cd /d "%APP_DIR%"
 
-REM --- ä»®æƒ³ç’°å¢ƒã‚’æœ‰åŠ¹åŒ– ---
-echo ä»®æƒ³ç’°å¢ƒã‚’æœ‰åŠ¹åŒ–ã—ã¦ã„ã¾ã™...
+REM --- ‰¼‘zŠÂ‹«‚ð—LŒø‰» ---
+echo ‰¼‘zŠÂ‹«‚ð—LŒø‰»‚µ‚Ä‚¢‚Ü‚·...
 call venv\Scripts\activate
 if errorlevel 1 (
-    echo ã‚¨ãƒ©ãƒ¼: ä»®æƒ³ç’°å¢ƒã®æœ‰åŠ¹åŒ–ã«å¤±æ•—ã—ã¾ã—ãŸã€‚
+    echo ƒGƒ‰[: ‰¼‘zŠÂ‹«‚Ì—LŒø‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B
     pause
     exit /b 1
 )
 
-REM --- ç’°å¢ƒå¤‰æ•°ã‚’è¨­å®š ---
+REM --- ŠÂ‹«•Ï”‚ðÝ’è ---
 set TORCH_HOME=%CD%
 set PYTHONPATH=%CD%
 
-REM --- ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’èµ·å‹• ---
-echo LaMa AIæ¶ˆã—ãƒ„ãƒ¼ãƒ«ã‚’èµ·å‹•ã—ã¦ã„ã¾ã™...
-echo èµ·å‹•ãŒå®Œäº†ã—ãŸã‚‰ã€ãƒ–ãƒ©ã‚¦ã‚¶ã§ http://localhost:7859 ã‚’é–‹ã„ã¦ãã ã•ã„ã€‚
+REM --- ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ð‹N“® ---
+echo LaMa AIÁ‚µƒc[ƒ‹‚ð‹N“®‚µ‚Ä‚¢‚Ü‚·...
+echo ‹N“®‚ªŠ®—¹‚µ‚½‚çAƒuƒ‰ƒEƒU‚Å http://localhost:7859 ‚ðŠJ‚¢‚Ä‚­‚¾‚³‚¢B
 python app.py
 if errorlevel 1 (
-    echo ã‚¨ãƒ©ãƒ¼: ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®èµ·å‹•ã«å¤±æ•—ã—ã¾ã—ãŸã€‚
+    echo ƒGƒ‰[: ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì‹N“®‚ÉŽ¸”s‚µ‚Ü‚µ‚½B
     pause
     exit /b 1
 )
