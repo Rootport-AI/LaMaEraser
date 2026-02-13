@@ -1,6 +1,8 @@
 import os
 import sys
 import tempfile
+import argparse
+import socket
 import torch
 import time
 from flask import Flask, request, jsonify, render_template, send_from_directory
@@ -151,5 +153,41 @@ def process_images():
             return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='LaMaEraser Flask server')
+    parser.add_argument(
+        '--listen',
+        action='store_true',
+        help='Bind to 0.0.0.0 so other devices on the same LAN can access the app',
+    )
+    parser.add_argument(
+        '--port',
+        type=int,
+        default=7859,
+        help='Port to run the Flask server on (default: 7859)',
+    )
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable Flask debug mode (ignored when --listen is used)',
+    )
+    args = parser.parse_args()
+
+    host = '0.0.0.0' if args.listen else '127.0.0.1'
+    debug = args.debug and not args.listen
+
     load_model()
-    app.run(host='0.0.0.0', port=7859, debug=True)
+
+    if args.listen:
+        local_ip = '127.0.0.1'
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+                sock.connect(('8.8.8.8', 80))
+                local_ip = sock.getsockname()[0]
+        except OSError:
+            logger.warning('Could not determine local LAN IP address automatically.')
+
+        logger.info('LAN公開中: 他端末からアクセスできます。')
+        logger.info(f'アクセスURL例: http://{local_ip}:{args.port}')
+        logger.info('セキュリティのため --listen 指定時は debug=False で起動します。')
+
+    app.run(host=host, port=args.port, debug=debug)
