@@ -54,14 +54,28 @@ style.css
 
 ## Usage
 1. Launch the Application  
-- Double-click run.bat to start the Flask server.
+- Local only (default): double-click `run.bat` to start the Flask server bound to `127.0.0.1`.
+- LAN share: run `run.bat --listen` from Command Prompt (or double-click `run_listen.bat`) to bind to `0.0.0.0`.
 2. Access the Tool  
-- Open a web browser and go to http://localhost:7859.  
+- Local PC: open http://localhost:7859.  
+- LAN clients (when `--listen` is enabled): open `http://<host-pc-ip>:7859`.
 3. Edit an Image  
 - Load an image using the "Load" button (F) or drag-and-drop.  
 - Use the brush (B), eraser (E), or bucket (G) to draw a mask.  
 - Press "Run" (Enter) to process the image with LaMa.  
 - Download the result with the "Download" button (S).  
+
+### Startup examples
+- `run.bat`
+  - Localhost only (`127.0.0.1`), not reachable from other devices.
+- `run.bat --listen`
+  - LAN accessible (`0.0.0.0`), reachable at `http://<host-pc-ip>:7859`.
+  - For safety, Flask debug mode is always disabled when `--listen` is set.
+
+### LAN access notes
+- Ensure the host PC and client device are on the same network.
+- Allow Python/port `7859` through Windows Defender Firewall if prompted.
+- Avoid exposing this port to untrusted/public networks.
 
 ## Keyboard Shortcuts  
 - Ctrl+Z: Undo
