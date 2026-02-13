@@ -17,6 +17,10 @@ LaMaEraser is a web-based image editing tool that integrates with the [LaMa inpa
 - Git
 - Internet connection (for cloning repository and downloading models)
 - CUDA GPU with VRAM 6GB or more.
+- **(Recommended) Visual Studio / Visual C++ Build Tools (C++ workload)**
+  - This project uses PyTorch and other native Python packages that depend on Windows runtime DLLs (e.g., OpenMP / MSVC runtime).
+  - Installing Visual Studio (or Build Tools) is a reliable way to obtain and keep these DLLs available, reducing “missing DLL” errors when importing PyTorch or running the app.
+
 
 ### Steps
 1. Download the Repository   
