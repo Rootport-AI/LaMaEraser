@@ -2,7 +2,7 @@
 set PYTHONUTF8=1
 echo Starting setup...
 
-REM 1. ç¾åœ¨ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ãƒ™ãƒ¼ã‚¹ã¨ã—ã¦ã€appfilesãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆ
+REM 1. Œ»İ‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğƒx[ƒX‚Æ‚µ‚ÄAappfilesƒfƒBƒŒƒNƒgƒŠ‚ğì¬
 set BASE_DIR=%~dp0
 set APP_DIR=%BASE_DIR%appfiles
 echo Setting up in: %APP_DIR%
@@ -10,7 +10,7 @@ echo Setting up in: %APP_DIR%
 if not exist "%APP_DIR%" mkdir "%APP_DIR%"
 cd /d "%APP_DIR%"
 
-REM 2. Rootport-AIã®LaMaãƒ•ã‚©ãƒ¼ã‚¯ã‚’GitHubã‹ã‚‰ã‚¯ãƒ­ãƒ¼ãƒ³
+REM 2. Rootport-AI‚ÌLaMaƒtƒH[ƒN‚ğGitHub‚©‚çƒNƒ[ƒ“
 echo Cloning Rootport-AI LaMa repository (GPU-enhanced fork)...
 git clone https://github.com/Rootport-AI/lama.git
 if errorlevel 1 (
@@ -19,7 +19,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 3. ã‚¯ãƒ­ãƒ¼ãƒ³ã—ãŸlamaãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ç§»å‹•ã—ã€Flaskã‚¢ãƒ—ãƒªç”¨ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆ
+REM 3. ƒNƒ[ƒ“‚µ‚½lamaƒfƒBƒŒƒNƒgƒŠ‚ÉˆÚ“®‚µAFlaskƒAƒvƒŠ—p‚ÌƒfƒBƒŒƒNƒgƒŠ‚ğì¬
 cd lama
 echo Creating directories for Flask app...
 if not exist "templates" mkdir templates
@@ -27,7 +27,7 @@ if not exist "static\js" mkdir static\js
 if not exist "static\css" mkdir static\css
 if not exist "static\images" mkdir static\images
 
-REM 4. ã‚«ã‚¹ã‚¿ãƒ ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼
+REM 4. ƒJƒXƒ^ƒ€ƒtƒ@ƒCƒ‹‚ğƒRƒs[
 echo Copying custom files...
 copy /Y "%BASE_DIR%app.py" .
 copy /Y "%BASE_DIR%index.html" "templates\index.html"
@@ -41,7 +41,7 @@ copy /Y "%BASE_DIR%images\favicon32.png" "static\images\favicon32.png"
 copy /Y "%BASE_DIR%images\favicon64.png" "static\images\favicon64.png"
 copy /Y "%BASE_DIR%images\favicon_original.jpg" "static\images\favicon_original.jpg"
 
-REM 5. Pythonä»®æƒ³ç’°å¢ƒã‚’ä½œæˆ
+REM 5. Python‰¼‘zŠÂ‹«‚ğì¬
 echo Creating virtual environment...
 python -m venv venv
 if errorlevel 1 (
@@ -50,11 +50,11 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 6. ä»®æƒ³ç’°å¢ƒã‚’ã‚¢ã‚¯ãƒ†ã‚£ãƒ™ãƒ¼ãƒˆ
+REM 6. ‰¼‘zŠÂ‹«‚ğƒAƒNƒeƒBƒx[ƒg
 echo Activating virtual environment...
 call venv\Scripts\activate
 
-REM 7. pipã‚’ç‰¹å®šã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã«å›ºå®šï¼ˆ23.0.1ï¼‰
+REM 7. pip‚ğ“Á’è‚Ìƒo[ƒWƒ‡ƒ“‚ÉŒÅ’èi23.0.1j
 echo Installing pip 23.0.1...
 python -m pip install pip==23.0.1
 if errorlevel 1 (
@@ -63,7 +63,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 8. require.txtã‹ã‚‰ä¾å­˜é–¢ä¿‚ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
+REM 8. require.txt‚©‚çˆË‘¶ŠÖŒW‚ğƒCƒ“ƒXƒg[ƒ‹
 echo Installing requirements from require.txt...
 pip install -r "%BASE_DIR%require.txt"
 if errorlevel 1 (
@@ -72,7 +72,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 9. big-lamaãƒ¢ãƒ‡ãƒ«ã‚’Hugging Faceã‹ã‚‰è‡ªå‹•ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
+REM 9. big-lamaƒ‚ƒfƒ‹‚ğHugging Face‚©‚ç©“®ƒ_ƒEƒ“ƒ[ƒh
 echo Downloading big-lama model from Hugging Face...
 curl -L -o big-lama.zip https://huggingface.co/smartywu/big-lama/resolve/main/big-lama.zip
 if errorlevel 1 (
@@ -81,7 +81,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM 10. ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸzipã‚’è§£å‡ã—ã¦æ­£ã—ã„å ´æ‰€ã«é…ç½®
+REM 10. ƒ_ƒEƒ“ƒ[ƒh‚µ‚½zip‚ğ‰ğ“€‚µ‚Ä³‚µ‚¢êŠ‚É”z’u
 echo Extracting big-lama model...
 mkdir temp
 powershell -Command "Expand-Archive -Path big-lama.zip -DestinationPath temp -Force"
@@ -102,11 +102,11 @@ if errorlevel 1 (
 rmdir /s /q temp
 del big-lama.zip
 
-REM 11. PYTHONPATHã‚’è¨­å®š
+REM 11. PYTHONPATH‚ğİ’è
 echo Setting PYTHONPATH for saicinpainting...
 set PYTHONPATH=%APP_DIR%\lama;%PYTHONPATH%
 
-REM 12. ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—å®Œäº†ã‚’é€šçŸ¥
+REM 12. ƒZƒbƒgƒAƒbƒvŠ®—¹‚ğ’Ê’m
 echo Setup completed successfully.
 echo Application installed in: %APP_DIR%
 pause

@@ -1,13 +1,13 @@
 @echo off
+setlocal
 
 REM --- ベースディレクトリとアプリケーションディレクトリを設定 ---
-set BASE_DIR=%~dp0
-set APP_DIR=%BASE_DIR%appfiles\lama
+set "BASE_DIR=%~dp0"
+set "APP_DIR=%BASE_DIR%appfiles\lama"
 
 REM --- アプリケーションディレクトリが存在するか確認 ---
 if not exist "%APP_DIR%" (
-echo note: run.bat --listen to allow LAN access (debug forced OFF)
-python app.py %*
+    echo エラー: アプリケーションが見つかりません。%APP_DIR% が存在しません。
     echo セットアップを先に実行してください。
     pause
     exit /b 1
@@ -26,13 +26,16 @@ if errorlevel 1 (
 )
 
 REM --- 環境変数を設定 ---
-set TORCH_HOME=%CD%
-set PYTHONPATH=%CD%
+set "TORCH_HOME=%CD%"
+set "PYTHONPATH=%CD%"
 
-REM --- アプリケーションを起動 ---
+REM --- 起動案内 ---
 echo LaMa AI消しツールを起動しています...
 echo 起動が完了したら、ブラウザで http://localhost:7859 を開いてください。
-python app.py
+echo note: add --listen to allow LAN access (debug forced OFF)
+
+REM --- アプリケーションを起動（引数透過） ---
+python app.py %*
 if errorlevel 1 (
     echo エラー: アプリケーションの起動に失敗しました。
     pause
@@ -40,3 +43,4 @@ if errorlevel 1 (
 )
 
 pause
+endlocal
