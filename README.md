@@ -20,6 +20,7 @@ LaMaEraser is a web-based image editing tool that integrates with the [LaMa inpa
 - **(Recommended) Visual Studio / Visual C++ Build Tools (C++ workload)**
   - This project uses PyTorch and other native Python packages that depend on Windows runtime DLLs (e.g., OpenMP / MSVC runtime).
   - Installing Visual Studio (or Build Tools) is a reliable way to obtain and keep these DLLs available, reducing “missing DLL” errors when importing PyTorch or running the app.
+  - Recommended Visual Studio workload: “Desktop development with C++” (or Visual Studio Build Tools with the same C++ workload) to ensure the MSVC/OpenMP runtime DLLs required by PyTorch are installed.
 
 
 ### Steps
